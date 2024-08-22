@@ -8,14 +8,14 @@
   >
     <template v-for="pane in panes" :key="pane.key ?? pane.tab">
       <a-tab-pane v-bind="omitComponent(pane)">
-        <component :is="pane.component"></component>
+        <component v-bind="pane.componentProps" :is="pane.component"></component>
       </a-tab-pane>
     </template>
   </a-tabs>
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch, watchEffect, useAttrs, onMounted } from 'vue';
+  import { computed, ref, watch } from 'vue';
   import type { TabsPro } from '.';
   import useQueryStorage from '../../hooks/routerPersistence';
   import { omit } from '../../tools/tool';
@@ -39,7 +39,7 @@
     }
   }
 
-  const omitComponent = (ops: { component: any }) => omit(ops, 'component');
+  const omitComponent = (ops) => omit(ops, 'component', 'componentProps');
 
   const internalActiveKey = useInternalActiveKey();
   function useInternalActiveKey() {

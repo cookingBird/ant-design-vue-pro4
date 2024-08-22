@@ -1,7 +1,7 @@
 <template>
   <radio-group
     v-bind="omitProps"
-    :value="value"
+    :value="innerValue"
     @update:value="updateValueHandler"
   ></radio-group>
 </template>
@@ -16,6 +16,7 @@
     beforeValue: (v: any) => v,
     afterChange: (v: any) => v,
   });
+  console.log('radio group pro props', props);
   const emit = defineEmits<{
     'update:value': [val: any];
   }>();
@@ -23,10 +24,11 @@
     omit(props, 'onUpdate:value', 'beforeValue', 'afterChange'),
   );
   const { valueGetter, valueSetter } = useValue(props.prop);
-  const value = computed(() =>
+  const innerValue = computed(() =>
     props.beforeValue!(props.value ?? valueGetter(props.model)),
   );
   const updateValueHandler = (val: any) => {
+    console.log('updateValueHandler', val);
     const _n = props.afterChange!(val);
     emit('update:value', _n);
     props.model && valueSetter(props.model, _n);

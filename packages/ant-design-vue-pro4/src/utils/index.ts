@@ -15,6 +15,7 @@ export function compile2Body<T extends Record<string, unknown>>(
       inset:0;
       background-color:transparent;
       pointer-events: none;
+      z-index:999;
     `,
   );
   container.appendChild(el);

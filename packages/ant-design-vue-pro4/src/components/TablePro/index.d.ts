@@ -11,4 +11,5 @@ export type TablePro = Omit<TableProps, 'scroll'> & {
   autoFitHeight?: boolean;
   styled?: 'default' | 'transparent';
   scroll?: { x: number; y: number };
+  rawTable?: boolean;
 };

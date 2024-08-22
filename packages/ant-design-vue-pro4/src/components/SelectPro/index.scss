@@ -1,3 +1,11 @@
-.ant-select .ant-select-selector {
+.select-pro.ant-select .ant-select-selector {
   box-sizing: border-box;
+}
+
+.select-pro.ant-select-multiple .ant-select-selection-item-remove {
+  display: inline-flex;
+}
+
+.select-pro .ant-select-selection-placeholder {
+  text-align: start;
 }

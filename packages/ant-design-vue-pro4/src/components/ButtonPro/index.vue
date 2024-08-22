@@ -6,16 +6,16 @@
     :data-active="props.active"
     class="button-pro"
   >
-    <a-popconfirm v-if="props.confirm" v-bind="props.confirm">
+    <Popconfirm v-if="props.confirm" v-bind="props.confirm">
       <slot> {{ label }} </slot>
-    </a-popconfirm>
+    </Popconfirm>
     <slot v-else> {{ label }} </slot>
   </Button>
 </template>
 
 <script setup lang="ts">
   import { ref, computed, watch, watchEffect } from 'vue';
-  import { Button } from 'ant-design-vue';
+  import { Button, Popconfirm } from 'ant-design-vue';
   import useLoading from '../../hooks/loading';
   import type { ButtonPro } from '.';
   import { omit } from '../../tools/tool';

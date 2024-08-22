@@ -4,5 +4,23 @@ import TablePro from './components/TablePro/index.vue';
 import GridLayout from './components/GridLayout/index.vue';
 import DragResizeComp from './components/DragResizeComp/index.vue';
 import ButtonPro from './components/ButtonPro/index.vue';
+import ModalPro from './components/ModalPro/index.vue';
+import TreePro from './components/TreePro/index.vue';
+import DescriptionsPro from './components/DescriptionsPro/index.vue';
+import PaginationPro from './components/PaginationPro/index.vue';
+import TabsPro from './components/TabsPro/index.vue';
 
-export { FormPro, ButtonGroupPro, TablePro, GridLayout, DragResizeComp, ButtonPro };
+export { compile2Body, compile2El } from './utils';
+export {
+  FormPro,
+  ButtonGroupPro,
+  TablePro,
+  GridLayout,
+  DragResizeComp,
+  ButtonPro,
+  ModalPro,
+  TreePro,
+  DescriptionsPro,
+  PaginationPro,
+  TabsPro,
+};

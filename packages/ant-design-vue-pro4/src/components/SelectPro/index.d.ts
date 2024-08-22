@@ -11,4 +11,5 @@ export type SelectPro = Omit<SelectProps, 'options'> &
     effectKeys?: string[];
     fetch?: (model: any) => Promise<unknown[]>;
     options?: ((model: any) => SelectOption[]) | SelectOption[];
+    insertable?: false;
   };

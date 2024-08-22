@@ -1,5 +1,10 @@
 <template>
-  <div v-if="options.slotIs" v-bind="options.wrapperProps" :prop="generalProp" wrapper>
+  <div
+    v-if="options.slotIs"
+    v-bind="options.wrapperProps || options.wrapperOptions"
+    :prop="generalProp"
+    wrapper
+  >
     <input-pro
       v-if="callFunction(options.slotIs, model) === 'input'"
       v-bind="options.slotProps"
@@ -7,13 +12,13 @@
       :model="model"
     >
     </input-pro>
-    <radio-group-pro
+    <RadioGroupPro
       v-else-if="callFunction(options.slotIs, model) === 'radioGroup'"
       v-bind="options.slotProps"
       :prop="options.name ?? options.prop"
       :model="model"
     >
-    </radio-group-pro>
+    </RadioGroupPro>
     <textarea-pro
       v-if="callFunction(options.slotIs, model) === 'textarea'"
       v-bind="options.slotProps"
@@ -75,6 +80,12 @@
       @update:value="(e) => valueSetter(model, e)"
     >
     </Cascader>
+  </div>
+  <div
+    v-else-if="props.model && (props.options.name || props.options.prop)"
+    v-bind="options.wrapperProps || options.wrapperOptions"
+  >
+    {{ props.model[props.options.name || props.options.prop] }}
   </div>
 </template>
 

@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
   import { ref, computed, watch, watchEffect, useAttrs, onMounted } from 'vue';
-  import InputPro from '../InputPro';
+  import InputPro from '../InputPro/index.vue';
   import { Tree as AntTree } from 'ant-design-vue';
   import type { TreePro } from '.';
   import { omit, pick } from '../../tools/tool';

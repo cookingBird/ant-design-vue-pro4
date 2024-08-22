@@ -1,7 +1,7 @@
 <template>
   <AntModal
     v-bind="omitProps"
-    v-model:visible="visible"
+    v-model:open="innerOpen"
     class="modal-pro"
     :class="`modal-pro--${styled}`"
     :confirmLoading="loading"
@@ -33,28 +33,28 @@
     styled: 'default',
     okText: '确认',
     cancelText: '取消',
-    visible: undefined,
+    open: undefined,
     mask: true,
   });
-  console.log('modal pro props', props);
+
   const emit = defineEmits<{
     'ok': [done: () => void];
-    'update:visible': [v: boolean];
+    'update:open': [v: boolean];
     'cancel': [];
   }>();
   const innerVisible = ref(true);
-  const visible = computed({
+  const innerOpen = computed({
     get() {
-      return props.visible ?? innerVisible.value;
+      return props.open ?? innerVisible.value;
     },
     set(val) {
       innerVisible.value = val;
-      emit('update:visible', val);
+      emit('update:open', val);
     },
   });
   const { loading, done } = useLoading();
   const omitProps = computed(() =>
-    omit(props, 'cancelButtonProps', 'onOk', 'onUpdate:visible', 'onCancel'),
+    omit(props, 'cancelButtonProps', 'onOk', 'onUpdate:open', 'onCancel'),
   );
   function handleOk() {
     loading.value = true;
@@ -74,6 +74,10 @@
   defineExpose({
     close() {
       innerVisible.value = false;
+      // @ts-expect-error
+      attrs._cancel?.();
+      // @ts-expect-error
+      attrs._close?.();
     },
   });
 </script>
