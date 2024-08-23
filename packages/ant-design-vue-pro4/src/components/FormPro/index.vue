@@ -4,6 +4,8 @@
     class="form-pro"
     v-bind="formProps"
     :model="model"
+    :labelAlign="formProps.labelAlign ?? 'right'"
+    :labelCol="form.labelCol ?? { style: 'width:110px' }"
     :data-style="styled"
   >
     <row-pro
@@ -89,8 +91,9 @@
 
 <script setup lang="ts">
   import { Form as AntForm } from 'ant-design-vue';
+  import { formProps as rawFormProps } from 'ant-design-vue/es/form/Form';
   import { computed, ref } from 'vue';
-  import type { FormItemProOptions, FormProProps } from '.';
+  import type { FormItemProOptions } from '.';
   import { omit } from '../../tools/tool';
   import { callValue } from '../../tools/visible';
   import FormItemPro from '../FormItemPro/index.vue';
@@ -101,16 +104,16 @@
     name: 'AFormPro',
     inheritAttrs: true,
   });
-  const props = withDefaults(defineProps<FormProProps>(), {
-    styled: 'default',
-    labelAlign: 'right',
-    // @ts-expect-error
-    labelCol: { style: 'width:110px' },
-    colon: true,
-    autocomplete: 'off',
+  const props = defineProps({
+    ...rawFormProps(),
+    options: Object,
+    styled: {
+      type: String,
+      default: 'default',
+    },
   });
 
-  const formProps = computed(() => omit({ ...props, ...props.options }, 'columns', 'row', 'options'));
+  const formProps = computed(() => omit({ ...props, ...omit(props.options, 'columns', 'row') }, 'options'));
 
   function _buildName(options: FormItemProOptions) {
     const { prop: _prop1, name: _name1 } = options.formItemProps;
