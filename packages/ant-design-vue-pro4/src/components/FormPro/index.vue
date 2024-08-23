@@ -1,27 +1,45 @@
 <template>
-  <ant-form
+  <AntForm
     ref="form"
     class="form-pro"
     v-bind="formProps"
     :model="model"
     :data-style="styled"
   >
-    <row-pro v-if="options.row" v-bind="options.row" :gutter="options.row.gutter ?? 12">
-      <template v-for="(item, index) in options.columns" :key="index">
+    <row-pro
+      v-if="options.row"
+      v-bind="options.row"
+      :gutter="options.row.gutter ?? 12"
+    >
+      <template
+        v-for="(item, index) in options.columns"
+        :key="index"
+      >
         <col-pro
           v-if="callValue(item.if, (val) => val(model))"
           v-show="callValue(item.show, (val) => val(model))"
           v-bind="item.col"
         >
           <form-item-pro v-bind="item.formItemProps">
-            <slot :name="_buildName(item)" :option="item" :model="model">
-              <TypeNode :options="_buildSlotProps(item)" :model="model"> </TypeNode>
+            <slot
+              :name="_buildName(item)"
+              :option="item"
+              :model="model"
+            >
+              <TypeNode
+                :options="_buildSlotProps(item)"
+                :model="model"
+              >
+              </TypeNode>
               <row-pro
                 v-if="item.children"
                 v-bind="item.children.row"
                 :gutter="item.children.row?.gutter ?? 12"
               >
-                <template v-for="(_item, index) in item.children.columns" :key="index">
+                <template
+                  v-for="(_item, index) in item.children.columns"
+                  :key="index"
+                >
                   <col-pro
                     v-if="callValue(_item.if, (val) => val(model))"
                     v-show="callValue(_item.show, (val) => val(model))"
@@ -33,7 +51,10 @@
                       :colon="item.children.colon ?? colon"
                       v-bind="_item.formItemProps"
                     >
-                      <TypeNode :options="_buildSlotProps(_item)" :model="model">
+                      <TypeNode
+                        :options="_buildSlotProps(_item)"
+                        :model="model"
+                      >
                       </TypeNode>
                     </form-item-pro>
                   </col-pro>
@@ -44,27 +65,38 @@
         </col-pro>
       </template>
     </row-pro>
-    <template v-for="item in options.columns" v-else>
+    <template
+      v-else
+      v-for="item in options.columns"
+    >
       <form-item-pro v-bind="item.formItemProps">
-        <slot :name="_buildName(item)" :option="item" :model="model">
-          <TypeNode :options="_buildSlotProps(item)" :model="model"> </TypeNode>
+        <slot
+          :name="_buildName(item)"
+          :option="item"
+          :model="model"
+        >
+          <TypeNode
+            :options="_buildSlotProps(item)"
+            :model="model"
+          >
+          </TypeNode>
         </slot>
       </form-item-pro>
     </template>
     <slot></slot>
-  </ant-form>
+  </AntForm>
 </template>
 
 <script setup lang="ts">
-  import { ref, computed } from 'vue';
   import { Form as AntForm } from 'ant-design-vue';
+  import { computed, ref } from 'vue';
+  import type { FormItemProOptions, FormProProps } from '.';
   import { omit } from '../../tools/tool';
-  import type { FormProProps, FormItemProOptions } from '.';
   import { callValue } from '../../tools/visible';
-  import TypeNode from '../TypeNode/index.vue';
-  import RowPro from '../GridPro/RowPro.vue';
-  import ColPro from '../GridPro/ColPro.vue';
   import FormItemPro from '../FormItemPro/index.vue';
+  import ColPro from '../GridPro/ColPro.vue';
+  import RowPro from '../GridPro/RowPro.vue';
+  import TypeNode from '../TypeNode/index.vue';
   defineOptions({
     name: 'AFormPro',
     inheritAttrs: true,
@@ -78,9 +110,7 @@
     autocomplete: 'off',
   });
 
-  const formProps = computed(() =>
-    omit({ ...props, ...props.options }, 'columns', 'row', 'options'),
-  );
+  const formProps = computed(() => omit({ ...props, ...props.options }, 'columns', 'row', 'options'));
 
   function _buildName(options: FormItemProOptions) {
     const { prop: _prop1, name: _name1 } = options.formItemProps;

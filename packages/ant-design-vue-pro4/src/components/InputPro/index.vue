@@ -1,62 +1,75 @@
 <template>
-  <Input
+  <AntInput
     ref="input"
     v-bind="omitProps"
-    :value="value"
+    :value="outerValue"
     :disabled="innerDisabled"
     @update:value="updateValueHandler"
   >
-    <template v-if="$slots.addonAfter" #addonAfter>
+    <template
+      v-if="$slots.addonAfter"
+      #addonAfter
+    >
       <slot name="addonAfter"> </slot>
     </template>
-    <template v-if="$slots.addonBefore" #addonBefore>
+    <template
+      v-if="$slots.addonBefore"
+      #addonBefore
+    >
       <slot name="addonBefore"> </slot>
     </template>
-    <template v-if="$slots.prefix" #prefix>
+    <template
+      v-if="$slots.prefix"
+      #prefix
+    >
       <slot name="prefix"> </slot>
     </template>
-    <template v-if="$slots.suffix" #suffix>
+    <template
+      v-if="$slots.suffix"
+      #suffix
+    >
       <slot name="suffix"> </slot>
     </template>
-  </Input>
+  </AntInput>
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch, watchEffect, useAttrs, onMounted } from 'vue';
-  import { Input } from 'ant-design-vue';
-  import type { InputPro } from '.';
-  import { omit } from '../../tools/tool';
+  import { Input as AntInput } from 'ant-design-vue';
+  import inputProps from 'ant-design-vue/es/input/inputProps';
+  import { computed, onMounted, ref } from 'vue';
   import { useValue } from '../../hooks/value';
+  import { omit } from '../../tools/tool';
   defineOptions({
     name: 'InputPro',
   });
-  const props = withDefaults(defineProps<InputPro>(), {
-    bordered: true,
-    placeholder: '请输入',
-    beforeValue: (v: any) => v,
-    afterChange: (v: any) => v,
-    type: 'text',
-    size: 'middle',
-    autocomplete: 'off',
+  const props = defineProps({
+    ...inputProps(),
+    // --------------- data bind----------------
+    model: Object,
+    prop: String,
+    beforeValue: Function,
+    afterChange: Function,
+    // -----------------------------
+    readonly: Boolean,
+    addonBeforeClick: Function,
+    addonAfterClick: Function,
   });
-  console.log('input prop props', props);
-  const omitProps = computed(() =>
-    omit(props, 'onUpdate:value', 'beforeValue', 'afterChange', 'model'),
-  );
+  const beforeValue = props.beforeValue || ((v) => v);
+  const afterChange = props.afterChange || ((v) => v);
+  const omitProps = computed(() => omit(props, 'onUpdate:value', 'beforeValue', 'afterChange', 'model', 'prop'));
   const innerDisabled = computed(() => props.disabled ?? props.readonly);
   const { valueGetter, valueSetter } = useValue(props.prop);
-  const value = computed(() =>
-    props.beforeValue(props.value ?? (props.model && valueGetter(props.model))),
-  );
+  const outerValue = computed(() => beforeValue(props.value || (props.model && valueGetter(props.model))) as string);
+
   const emit = defineEmits<{
     'update:value': [val: any];
   }>();
   const updateValueHandler = (val: any) => {
-    const _n = props.afterChange(val);
+    const _n = afterChange(val);
     emit('update:value', _n);
     props.model && valueSetter(props.model, _n);
   };
-  const input = ref<InstanceType<typeof Input>>();
+  const input = ref<InstanceType<typeof AntInput>>();
   onMounted(() => {
     const rootEl: HTMLElement | undefined = input.value?.$el;
 
