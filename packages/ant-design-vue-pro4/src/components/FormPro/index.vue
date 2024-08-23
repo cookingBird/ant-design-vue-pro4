@@ -5,7 +5,7 @@
     v-bind="formProps"
     :model="model"
     :labelAlign="formProps.labelAlign ?? 'right'"
-    :labelCol="form.labelCol ?? { style: 'width:110px' }"
+    :labelCol="formProps.labelCol ?? { style: 'width:110px' }"
     :data-style="styled"
   >
     <row-pro
