@@ -1,3 +1,5 @@
+import { computed } from 'vue';
+import { useRouter } from 'vue-router';
 export default function useQueryStorage<T>(key: string, fallbackValue: () => T) {
   const router = useRouter();
   const value = computed<T>({

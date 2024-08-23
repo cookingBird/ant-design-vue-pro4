@@ -21,6 +21,7 @@
     "@vueuse/core": "^10.11.0",
     "ant-design-vue": "4.2.3",
     "draggable-resizable-vue3": "1.0.94-beta",
-    "vue": "^3.4.34"
+    "vue": "^3.4.34",
+    "vue-router": "^4"
   }
 }

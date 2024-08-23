@@ -9,12 +9,12 @@
     :data-style="styled"
   >
     <row-pro
-      v-if="options.row"
-      v-bind="options.row"
-      :gutter="options.row.gutter ?? 12"
+      v-if="innerRow"
+      v-bind="innerRow"
+      :gutter="innerRow.gutter ?? 12"
     >
       <template
-        v-for="(item, index) in options.columns"
+        v-for="(item, index) in innerCols"
         :key="index"
       >
         <col-pro
@@ -69,7 +69,7 @@
     </row-pro>
     <template
       v-else
-      v-for="item in options.columns"
+      v-for="item in innerCols"
     >
       <form-item-pro v-bind="item.formItemProps">
         <slot
@@ -107,6 +107,8 @@
   const props = defineProps({
     ...rawFormProps(),
     options: Object,
+    columns: Array,
+    row: Object,
     styled: {
       type: String,
       default: 'default',
@@ -114,6 +116,8 @@
   });
 
   const formProps = computed(() => omit({ ...props, ...omit(props.options, 'columns', 'row') }, 'options'));
+  const innerCols = computed(() => props.options?.columns || props.columns);
+  const innerRow = computed(() => props.options?.row || props.row);
 
   function _buildName(options: FormItemProOptions) {
     const { prop: _prop1, name: _name1 } = options.formItemProps;
