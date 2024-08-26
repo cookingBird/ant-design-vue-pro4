@@ -85,7 +85,7 @@
     v-else-if="props.model && (props.options.name || props.options.prop)"
     v-bind="options.wrapperProps || options.wrapperOptions"
   >
-    {{ props.model[props.options.name || props.options.prop] }}
+    {{ get(props.model, props.options.name || props.options.prop) }}
   </div>
 </template>
 
@@ -106,6 +106,7 @@
   import InputNumberPro from '../InputNumberPro/index.vue';
   import SwitchPro from '../SwitchPro/index.vue';
   import { callFunction } from '../../tools/tool';
+  import { get } from 'lodash';
   defineOptions({
     name: 'TypeNode',
   });

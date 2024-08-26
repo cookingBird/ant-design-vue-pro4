@@ -15,4 +15,5 @@ export type DescriptionsItemPropPro = {} & {
 export type DescriptionsPropsPro = {} & {
   columns: DescriptionsItemPropPro[];
   model: Record<string, any>;
+  tableLayout?: 'fixed' | 'auto';
 };
