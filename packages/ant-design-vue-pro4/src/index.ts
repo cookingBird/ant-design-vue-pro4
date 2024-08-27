@@ -9,6 +9,9 @@ import TreePro from './components/TreePro/index.vue';
 import DescriptionsPro from './components/DescriptionsPro/index.vue';
 import PaginationPro from './components/PaginationPro/index.vue';
 import TabsPro from './components/TabsPro/index.vue';
+import InputPro from './components/InputPro/index.vue';
+import SpinPro from './components/SpinPro/index.vue';
+import FullHeightWrapper from './components/FullHeightWrapper/index.vue';
 
 export { compile2Body, compile2El } from './utils';
 export {
@@ -23,4 +26,7 @@ export {
   DescriptionsPro,
   PaginationPro,
   TabsPro,
+  InputPro,
+  SpinPro,
+  FullHeightWrapper,
 };

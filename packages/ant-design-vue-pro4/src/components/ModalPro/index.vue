@@ -86,6 +86,7 @@
       default: true,
     },
   });
+  console.log('modal prop props', props);
 
   const emit = defineEmits<{
     'ok': [done: () => void];
