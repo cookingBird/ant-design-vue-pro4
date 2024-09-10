@@ -30,14 +30,10 @@
     dropdownStyle: "{ maxHeight: '400px', overflow: 'auto' }",
     showSearch: true,
   });
-  const omitProps = computed(() =>
-    omit(props, 'model', 'fetch', 'open', 'onUpdate:value'),
-  );
+  const omitProps = computed(() => omit(props, 'model', 'fetch', 'open', 'onUpdate:value'));
   const propRefs = toRefs(props);
   const fetchOps = ref<SelectOption[]>([]);
-  const builtOptions = computed(
-    () => callFunction(props.options, props.model) ?? fetchOps.value,
-  );
+  const builtOptions = computed(() => callFunction(props.options, props.model) ?? fetchOps.value);
   const loading = ref(false);
   if (props.fetch) {
     const { result, loading } = useFetch(props.fetch, propRefs.model, props.effectKeys);
@@ -48,9 +44,7 @@
     });
   }
   const { valueGetter, valueSetter } = useValue(props.prop);
-  const value = computed(() =>
-    props.beforeValue!(props.value ?? valueGetter(props.model)),
-  );
+  const value = computed(() => props.beforeValue!(props.value ?? valueGetter(props.model)));
   const emit = defineEmits<{
     'update:value': [val: any];
   }>();
@@ -60,7 +54,3 @@
     props.model && valueSetter(props.model, _n);
   };
 </script>
-
-<style lang="scss">
-  @import './index.scss';
-</style>

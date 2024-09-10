@@ -1,12 +1,6 @@
 <template>
-  <div ref="tableRefWrapper" class="table-pro-wrapper" :data-style="styled">
-    <ant-table
-      v-if="!props.rawTable"
-      ref="tableRef"
-      v-bind="props"
-      :class="autoFitHeight ? 'table-pro--autoHeight' : ''"
-      :columns="withDefaultCols"
-    >
+  <ConfigProvider :theme="theme">
+    <ant-table v-if="!props.rawTable" ref="tableRef" v-bind="props" :scroll="scroll" :columns="withDefaultCols">
       <template #bodyCell="{ column, record, index }">
         <slot
           v-if="column.slotIs"
@@ -36,40 +30,59 @@
         </template>
       </template>
     </ant-table>
-    <ant-table
-      v-else
-      ref="tableRef"
-      v-bind="props"
-      :class="autoFitHeight ? 'table-pro--autoHeight' : ''"
-      :columns="withDefaultCols"
-    >
+    <ant-table v-else ref="tableRef" v-bind="props" :scroll="scroll" :columns="withDefaultCols">
       <template #bodyCell="slotParams">
         <slot name="bodyCell" v-bind="slotParams"></slot>
       </template>
     </ant-table>
-  </div>
+  </ConfigProvider>
 </template>
 
 <script lang="ts" setup>
-  import { Table as AntTable } from 'ant-design-vue';
-  import { computed, ref } from 'vue';
-  import type { TablePro } from '.';
+  import { computed, ref, type PropType } from 'vue';
+  import { Table as AntTable, ConfigProvider } from 'ant-design-vue';
+  import { tableProps } from 'ant-design-vue/es/table';
+  import { type TableToken } from 'ant-design-vue/es/table/style';
   import TypeNodeVue from '../TypeNode/index.vue';
+  import useTableScroll from '../../hooks/useTableScroll';
+  import useComponentTheme from '../../hooks/useComponentTheme';
   defineOptions({
     name: 'TablePro',
-    inheritAttrs: true,
+    inheritAttrs: false,
   });
 
-  const props = withDefaults(defineProps<TablePro>(), {
-    bordered: true,
-    sticky: true,
-    showHeader: true,
-    autoFitHeight: true,
-    styled: 'default',
-    rawTable: false,
+  const props = defineProps({
+    ...tableProps(),
+    bordered: {
+      type: Boolean,
+      default: true,
+    },
+    rawTable: {
+      type: Boolean,
+      default: false,
+    },
+    styled: {
+      type: String,
+      default: 'default',
+    },
+    theme: Object as PropType<TableToken>,
+    class: String,
+    style: String,
+    pagination: {
+      type: [Object, Boolean],
+      default: false,
+    },
   });
 
-  const tableRefWrapper = ref<HTMLDivElement | null>(null);
+  const transparentTheme = computed<Partial<TableToken>>(() =>
+    props.styled === 'transparent' ?
+      {
+        tableHeaderBg: 'transparent',
+        tableBg: 'transparent',
+      }
+    : {},
+  );
+  const theme = useComponentTheme('Table', transparentTheme, props.theme);
 
   const withDefaultCols = computed(
     () =>
@@ -79,13 +92,14 @@
       })) || [],
   );
 
-  const tableRef = ref<typeof AntTable | null>(null);
+  const tableRef = ref<InstanceType<typeof AntTable>>(null);
+  const scroll = useTableScroll(tableRef);
 
   defineExpose({
-    tableRef,
+    ...tableRef.value,
   });
 </script>
 
 <style lang="css">
-  @import './index.scss';
+  @import './index.css';
 </style>

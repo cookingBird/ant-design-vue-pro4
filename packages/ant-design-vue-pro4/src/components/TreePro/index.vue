@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, watch, watchEffect, useAttrs, onMounted } from 'vue';
+  import { ref, computed, watch, watchEffect, useAttrs } from 'vue';
   import InputPro from '../InputPro/index.vue';
   import { Tree as AntTree } from 'ant-design-vue';
   import type { TreePro } from '.';
@@ -38,11 +38,7 @@
   import { SearchOutlined } from '@ant-design/icons-vue';
   import getTreeTravel from '../../tools/getTreeTravel';
   import findSelfList from '../../tools/findSelfList';
-  import type {
-    AntTreeNodeDropEvent,
-    TreeProps,
-    TreeDataItem,
-  } from 'ant-design-vue/lib/tree';
+  import type { AntTreeNodeDropEvent, TreeProps, TreeDataItem } from 'ant-design-vue/lib/tree';
   import { useSessionStorage } from '@vueuse/core';
 
   defineOptions({
@@ -65,9 +61,7 @@
     'rightClick': [ev: MouseEvent, data: any];
     'drop': [info: AntTreeNodeDropEvent, changeList: unknown[]];
   }>();
-  const treeProps = computed(() =>
-    omit({ ...attrs, ...props }, 'searchValue', 'searchOptions', 'size', 'onDrop'),
-  );
+  const treeProps = computed(() => omit({ ...attrs, ...props }, 'searchValue', 'searchOptions', 'size', 'onDrop'));
   const inputProps = computed(() => pick(props, 'searchOptions', 'searchValue'));
   const modelValueHandler = (val: string) => {
     emit('update:searchValue', val);
@@ -76,10 +70,7 @@
   const innerData = ref([] as any);
 
   // >>>>>>>>>>>>>> expand persistence
-  const innerExpandedKeys = useSessionStorage(
-    'treeExpandedKeys-' + props.name,
-    [] as (string | number)[],
-  );
+  const innerExpandedKeys = useSessionStorage('treeExpandedKeys-' + props.name, [] as (string | number)[]);
   const wrapperInnerExpandedKeys = computed(() =>
     innerExpandedKeys.value.length > 0 ? innerExpandedKeys.value : undefined,
   );
@@ -134,14 +125,10 @@
 
     // Find dragObject
     let dragObj: TreeDataItem;
-    findSelfList(
-      data,
-      dragKey,
-      (item: TreeDataItem, index: number, arr: TreeProps['treeData']) => {
-        arr?.splice(index, 1);
-        dragObj = item;
-      },
-    );
+    findSelfList(data, dragKey, (item: TreeDataItem, index: number, arr: TreeProps['treeData']) => {
+      arr?.splice(index, 1);
+      dragObj = item;
+    });
     if (!info.dropToGap) {
       // Drop on the content
       findSelfList(data, dropKey, (item: TreeDataItem) => {
@@ -168,14 +155,10 @@
     } else {
       let ar: TreeProps['treeData'] = [];
       let i = 0;
-      findSelfList(
-        data,
-        dropKey,
-        (_item: TreeDataItem, index: number, arr: TreeProps['treeData']) => {
-          ar = arr;
-          i = index;
-        },
-      );
+      findSelfList(data, dropKey, (_item: TreeDataItem, index: number, arr: TreeProps['treeData']) => {
+        ar = arr;
+        i = index;
+      });
       if (dropPosition === -1) {
         // @ts-expect-error
         ar.splice(i, 0, dragObj);

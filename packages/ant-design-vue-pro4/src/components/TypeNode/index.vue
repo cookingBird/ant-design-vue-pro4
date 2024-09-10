@@ -1,10 +1,5 @@
 <template>
-  <div
-    v-if="options.slotIs"
-    v-bind="options.wrapperProps || options.wrapperOptions"
-    :prop="generalProp"
-    wrapper
-  >
+  <div v-if="options.slotIs" v-bind="options.wrapperProps || options.wrapperOptions" :prop="generalProp" wrapper>
     <input-pro
       v-if="callFunction(options.slotIs, model) === 'input'"
       v-bind="options.slotProps"
@@ -131,7 +126,3 @@
     return propTag;
   }
 </script>
-
-<style lang="scss">
-  @import './index.scss';
-</style>

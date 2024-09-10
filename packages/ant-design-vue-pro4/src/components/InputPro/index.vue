@@ -6,28 +6,16 @@
     :disabled="innerDisabled"
     @update:value="updateValueHandler"
   >
-    <template
-      v-if="$slots.addonAfter"
-      #addonAfter
-    >
+    <template v-if="$slots.addonAfter" #addonAfter>
       <slot name="addonAfter"> </slot>
     </template>
-    <template
-      v-if="$slots.addonBefore"
-      #addonBefore
-    >
+    <template v-if="$slots.addonBefore" #addonBefore>
       <slot name="addonBefore"> </slot>
     </template>
-    <template
-      v-if="$slots.prefix"
-      #prefix
-    >
+    <template v-if="$slots.prefix" #prefix>
       <slot name="prefix"> </slot>
     </template>
-    <template
-      v-if="$slots.suffix"
-      #suffix
-    >
+    <template v-if="$slots.suffix" #suffix>
       <slot name="suffix"> </slot>
     </template>
   </AntInput>
@@ -44,6 +32,10 @@
   });
   const props = defineProps({
     ...inputProps(),
+    placeholder: {
+      type: String,
+      default: '请输入',
+    },
     // --------------- data bind----------------
     model: Object,
     prop: String,
