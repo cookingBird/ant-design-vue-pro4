@@ -9,23 +9,25 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
-    "@vue/compiler-dom": "3.4.36",
-    "@vue/compiler-core": "3.4.36",
-    "autoprefixer": "10.4.20",
-    "postcss": "8.4.41",
-    "tailwindcss": "3.4.7",
-    "@types/lodash": "4.17.7"
-  },
+
   "dependencies": {
     "@vueuse/core": "^10.11.0",
     "draggable-resizable-vue3": "1.0.94-beta",
-    "lodash": "4.17.21"
+    "lodash": "4.17.21",
+    "@easy/common-utils": "workspace:*"
   },
   "peerDependencies": {
     "ant-design-vue": "^4.2.3",
     "@ant-design/icons-vue": "^7.0.1",
     "vue": "^3.5.0",
     "vue-router": "^4.4.3"
+  },
+  "devDependencies": {
+    "@vue/compiler-dom": "^3.4.36",
+    "@vue/compiler-core": "^3.4.36",
+    "autoprefixer": "10.4.20",
+    "postcss": "8.4.41",
+    "tailwindcss": "3.4.7",
+    "@types/lodash": "4.17.7"
   }
 }

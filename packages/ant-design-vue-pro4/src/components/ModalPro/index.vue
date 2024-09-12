@@ -1,8 +1,5 @@
 <template>
-  <ConfigProvider
-    v-if="$attrs._close"
-    :locale="zhCN"
-  >
+  <ConfigProvider :locale="zhCN" :theme="theme">
     <AntModal
       v-bind="omitProps"
       v-model:open="innerOpen"
@@ -12,55 +9,17 @@
       @ok="handleOk"
       @cancel="handleCancel"
     >
-      <template
-        v-if="$slots.title"
-        #title
-      >
+      <template v-if="$slots.title" #title>
         <slot name="title"> </slot>
       </template>
-      <template
-        v-if="$slots.default"
-        #default
-      >
+      <template v-if="$slots.default" #default>
         <slot name="default"> </slot>
       </template>
-      <template
-        v-if="$slots.footer"
-        #footer
-      >
+      <template v-if="$slots.footer" #footer>
         <slot name="footer"> </slot>
       </template>
     </AntModal>
   </ConfigProvider>
-  <AntModal
-    v-else
-    v-bind="omitProps"
-    v-model:open="innerOpen"
-    class="modal-pro"
-    :class="`modal-pro--${styled}`"
-    :confirmLoading="loading"
-    @ok="handleOk"
-    @cancel="handleCancel"
-  >
-    <template
-      v-if="$slots.title"
-      #title
-    >
-      <slot name="title"> </slot>
-    </template>
-    <template
-      v-if="$slots.default"
-      #default
-    >
-      <slot name="default"> </slot>
-    </template>
-    <template
-      v-if="$slots.footer"
-      #footer
-    >
-      <slot name="footer"> </slot>
-    </template>
-  </AntModal>
 </template>
 
 <script lang="ts" setup>
@@ -70,6 +29,7 @@
   import { modalProps } from 'ant-design-vue/es/modal/Modal';
   import { omit } from '../../tools/tool';
   import useLoading from '../../hooks/loading';
+  import useComponentTheme from '../../hooks/useComponentTheme';
   const attrs = useAttrs();
   const props = defineProps({
     ...modalProps(),
@@ -85,8 +45,9 @@
       type: Boolean,
       default: true,
     },
+    style: String,
+    class: String,
   });
-  console.log('modal prop props', props);
 
   const emit = defineEmits<{
     'ok': [done: () => void];
@@ -103,6 +64,13 @@
       emit('update:open', val);
     },
   });
+  const _theme =
+    props.styled === 'transparent' ?
+      {
+        modalContentBg: 'transparent',
+      }
+    : {};
+  const theme = useComponentTheme('Modal', _theme);
   const { loading, done } = useLoading();
   const omitProps = computed(() => omit(props, 'cancelButtonProps', 'onOk', 'onUpdate:open', 'onCancel'));
   function handleOk() {

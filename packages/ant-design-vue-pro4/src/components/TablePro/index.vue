@@ -25,9 +25,6 @@
         <template v-else-if="column.dataIndex === 'index'">
           {{ index + 1 }}
         </template>
-        <template v-else>
-          {{ record[column.dataIndex] }}
-        </template>
       </template>
     </ant-table>
     <ant-table v-else ref="tableRef" v-bind="props" :scroll="scroll" :columns="withDefaultCols">
@@ -39,6 +36,7 @@
 </template>
 
 <script lang="ts" setup>
+  import { treeMap } from '@easy/common-utils';
   import { computed, ref, type PropType } from 'vue';
   import { Table as AntTable, ConfigProvider } from 'ant-design-vue';
   import { tableProps } from 'ant-design-vue/es/table';
@@ -86,10 +84,11 @@
 
   const withDefaultCols = computed(
     () =>
-      props.columns?.map((col) => ({
-        ...col,
-        align: col.align ?? 'center',
-      })) || [],
+      // treeMap(props.columns, (col) => ({
+      //   ...col,
+      //   align: col.align ?? 'center',
+      // })) || [],
+      props.columns || [],
   );
 
   const tableRef = ref<InstanceType<typeof AntTable>>(null);

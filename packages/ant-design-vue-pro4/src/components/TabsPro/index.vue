@@ -17,7 +17,7 @@
 <script setup lang="ts">
   import { computed, ref, watch } from 'vue';
   import type { TabsPro } from '.';
-  import useQueryStorage from '../../hooks/routerPersistence';
+  import useQueryStorage from '../../hooks/useQueryStorage';
   import { omit } from '../../tools/tool';
   const props = withDefaults(defineProps<TabsPro>(), {
     size: 'large',
@@ -28,10 +28,7 @@
   const emit = defineEmits<{
     'update:activeKey': [val: string | number];
   }>();
-  const { value: activeTabKeyValue } = useQueryStorage(
-    'activeTabKey',
-    () => props.activeKey ?? props.panes[0]?.key,
-  );
+  const { value: activeTabKeyValue } = useQueryStorage('activeTabKey', () => props.activeKey ?? props.panes[0]?.key);
   function onUpdateActiveKey(val: string | number) {
     emit('update:activeKey', val);
     if (props.useRoute) {

@@ -13,10 +13,10 @@ export function useValue(
   const props = Array.isArray(prop)
     ? prop
     : typeof prop === 'string'
-    ? prop?.split('.')
-    : prop !== undefined
-    ? [prop]
-    : undefined;
+      ? prop?.split('.')
+      : prop !== undefined
+        ? [prop]
+        : undefined;
   return {
     valueGetter(model: any): any {
       if (model === undefined || model === null) {
@@ -29,16 +29,14 @@ export function useValue(
           val =
             val[key] === undefined || val[key] === null
               ? isRef(val)
-                ? // @ts-expect-error
-                  (val.value[key] = reactive({}))
+                ? (val.value[key] = reactive({}))
                 : (val[key] = reactive({}))
               : val[key];
         } else {
           val =
             val[key] === undefined || val[key] === null
               ? isRef(val)
-                ? // @ts-expect-error
-                  (val.value[key] = fallbackValue)
+                ? (val.value[key] = fallbackValue)
                 : (val[key] = fallbackValue)
               : val[key];
         }
@@ -56,13 +54,11 @@ export function useValue(
         if (index < length - 1) {
           isRef(context)
             ? (context = context.value[key])
-            : // @ts-expect-error
-              (context = context[key]);
+            : (context = context[key]);
         } else {
           isRef(context)
             ? (context.value[key] = value)
-            : // @ts-expect-error
-              (context[key] = value);
+            : (context[key] = value);
         }
       });
     },

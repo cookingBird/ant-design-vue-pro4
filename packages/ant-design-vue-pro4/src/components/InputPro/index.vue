@@ -38,7 +38,7 @@
     },
     // --------------- data bind----------------
     model: Object,
-    prop: String,
+    prop: [String, Array],
     beforeValue: Function,
     afterChange: Function,
     // -----------------------------

@@ -35,7 +35,6 @@ export default function useTableScroll(tableRef: Ref<InstanceType<typeof Table>>
       const antPagination = antTableContainer.querySelector(
         '.ant-pagination.ant-table-pagination',
       ) as HTMLElement;
-      console.log(seed, antHeader, antTableContainer)
       let margin = getMarginValue(null);
       if (antHeader && antTableContainer.offsetHeight && antHeader.offsetHeight) {
         scroll.value.y = antTableContainer.offsetHeight - antHeader.offsetHeight - ((margin = getMarginValue(antPagination)) ? (margin.top + margin.bottom + antPagination.offsetHeight) : 0);

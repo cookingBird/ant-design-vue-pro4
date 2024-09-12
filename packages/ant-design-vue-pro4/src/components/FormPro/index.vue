@@ -1,6 +1,6 @@
 <template>
   <AntForm
-    ref="form"
+    ref="formRef"
     class="form-pro"
     v-bind="formProps"
     :model="model"
@@ -8,40 +8,18 @@
     :labelCol="formProps.labelCol ?? { style: 'width:110px' }"
     :data-style="styled"
   >
-    <row-pro
-      v-if="innerRow"
-      v-bind="innerRow"
-      :gutter="innerRow.gutter ?? 12"
-    >
-      <template
-        v-for="(item, index) in innerCols"
-        :key="index"
-      >
+    <row-pro v-if="innerRow" v-bind="innerRow" :gutter="innerRow.gutter ?? 12">
+      <template v-for="(item, index) in innerCols" :key="index">
         <col-pro
           v-if="callValue(item.if, (val) => val(model))"
           v-show="callValue(item.show, (val) => val(model))"
           v-bind="item.col"
         >
           <form-item-pro v-bind="item.formItemProps">
-            <slot
-              :name="_buildName(item)"
-              :option="item"
-              :model="model"
-            >
-              <TypeNode
-                :options="_buildSlotProps(item)"
-                :model="model"
-              >
-              </TypeNode>
-              <row-pro
-                v-if="item.children"
-                v-bind="item.children.row"
-                :gutter="item.children.row?.gutter ?? 12"
-              >
-                <template
-                  v-for="(_item, index) in item.children.columns"
-                  :key="index"
-                >
+            <slot :name="_buildName(item)" :option="item" :model="model">
+              <TypeNode :options="_buildSlotProps(item)" :model="model"> </TypeNode>
+              <row-pro v-if="item.children" v-bind="item.children.row" :gutter="item.children.row?.gutter ?? 12">
+                <template v-for="(_item, index) in item.children.columns" :key="index">
                   <col-pro
                     v-if="callValue(_item.if, (val) => val(model))"
                     v-show="callValue(_item.show, (val) => val(model))"
@@ -53,11 +31,7 @@
                       :colon="item.children.colon ?? colon"
                       v-bind="_item.formItemProps"
                     >
-                      <TypeNode
-                        :options="_buildSlotProps(_item)"
-                        :model="model"
-                      >
-                      </TypeNode>
+                      <TypeNode :options="_buildSlotProps(_item)" :model="model"> </TypeNode>
                     </form-item-pro>
                   </col-pro>
                 </template>
@@ -67,21 +41,10 @@
         </col-pro>
       </template>
     </row-pro>
-    <template
-      v-else
-      v-for="item in innerCols"
-    >
+    <template v-else v-for="item in innerCols">
       <form-item-pro v-bind="item.formItemProps">
-        <slot
-          :name="_buildName(item)"
-          :option="item"
-          :model="model"
-        >
-          <TypeNode
-            :options="_buildSlotProps(item)"
-            :model="model"
-          >
-          </TypeNode>
+        <slot :name="_buildName(item)" :option="item" :model="model">
+          <TypeNode :options="_buildSlotProps(item)" :model="model"> </TypeNode>
         </slot>
       </form-item-pro>
     </template>
@@ -90,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-  import { Form as AntForm } from 'ant-design-vue';
+  import { Form as AntForm, message } from 'ant-design-vue';
   import { formProps as rawFormProps } from 'ant-design-vue/es/form/Form';
   import { computed, ref } from 'vue';
   import type { FormItemProOptions } from '.';
@@ -147,19 +110,26 @@
       prop: formItemProps.prop ?? options.prop,
     };
   }
-  const form = ref<InstanceType<typeof AntForm>>();
+  const formRef = ref<InstanceType<typeof AntForm> | null>(null);
   defineExpose({
-    formRef: form,
+    validate: (...args) =>
+      // @ts-expect-error
+      formRef.value?.validate(...args).catch((e) => {
+        message.error(e.errorFields.map((f) => f.errors[0]).join(';'));
+        return Promise.reject(e);
+      }),
+    validateFields: (...args) =>
+      // @ts-expect-error
+      formRef.value.validateFields(...args).catch((e) => {
+        message.error(e.errorFields.map((f) => f.errors[0]).join(';'));
+        return Promise.reject(e);
+      }),
     // @ts-expect-error
-    validate: (...args) => form.value.validate(...args),
+    clearValidate: (...args) => formRef.value.clearValidate(...args),
     // @ts-expect-error
-    validateFields: (...args) => form.value.validateFields(...args),
+    resetFields: (...args) => formRef.value.resetFields(...args),
     // @ts-expect-error
-    clearValidate: (...args) => form.value.clearValidate(...args),
-    // @ts-expect-error
-    resetFields: (...args) => form.value.resetFields(...args),
-    // @ts-expect-error
-    scrollToField: (...args) => form.value.scrollToField(...args),
+    scrollToField: (...args) => formRef.value.scrollToField(...args),
   });
 </script>
 

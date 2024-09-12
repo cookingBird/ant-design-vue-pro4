@@ -4,8 +4,13 @@
       <Descriptions v-bind="omitProps" class="descriptions-pro">
         <template v-for="col of props.columns">
           <DescriptionsItem v-bind="itemPropsOmit(col)">
-            <FormItem v-bind="col.formItemProps">
-              <TypeNode v-if="col.content" :options="col.content" :model="props.model" />
+            <template #label>
+              <div :class="isRequired(col.formItemProps) ? 'label--required' : ''">
+                {{ col.label }}
+              </div>
+            </template>
+            <FormItem v-bind="{ ...col.formItemProps, name: nameGetter(col) }">
+              <TypeNode v-if="col.content" :options="{ ...col.content, name: nameGetter(col) }" :model="props.model" />
             </FormItem>
           </DescriptionsItem>
         </template>
@@ -15,8 +20,8 @@
 </template>
 
 <script setup lang="ts">
-  import { computed, type PropType } from 'vue';
-  import { Descriptions, DescriptionsItem, Form, FormItem, ConfigProvider } from 'ant-design-vue';
+  import { computed, type PropType, ref } from 'vue';
+  import { Descriptions, DescriptionsItem, Form, FormItem, ConfigProvider, message } from 'ant-design-vue';
   import { descriptionsProps, type DescriptionsItemProp } from 'ant-design-vue/es/descriptions/index';
   import { type FormProps, type FormItemProps } from 'ant-design-vue/es/form/index';
   import { type DescriptionsPropsPro } from './index.d';
@@ -28,40 +33,55 @@
   });
   const props = defineProps({
     ...descriptionsProps(),
-    columns: Array as PropType<DescriptionsItemProp & { content: any; formItemProps: FormItemProps }[]>,
+    columns: Array as PropType<(DescriptionsItemProp & { content: any; formItemProps: FormItemProps })[]>,
     model: Object,
     tableLayout: {
       type: String,
       default: 'fixed',
     },
-    formProps: Object as PropType<FormProps>,
+    formProps: { type: Object as PropType<FormProps> },
     class: String,
     style: String,
   });
   const omitProps = computed(() => omit(props, 'columns', 'model'));
-  const itemPropsOmit = (item: DescriptionsPropsPro['columns'][number]) => omit(item, 'content', 'formItemProps');
+  const itemPropsOmit = (item: DescriptionsPropsPro['columns'][number]) =>
+    omit(item, 'content', 'formItemProps', 'label');
 
   const theme = useComponentTheme('Descriptions', {
     padding: '24px 24',
     paddingLG: '0px 24',
   });
 
-  const formRef = ref<InstanceType<typeof Form>>();
+  const formRef = ref<InstanceType<typeof Form> | null>(null);
+
+  const isRequired = (formItem: FormItemProps | undefined) => formItem?.required || formItem?.rules;
+  const nameGetter = (col: any) => col.formItemProps?.name || col.content?.name;
 
   defineExpose({
-    validate: (...args) => formRef.value?.validate(...args),
+    validate: (...args) =>
+      // @ts-expect-error
+      formRef.value?.validate(...args).catch((e) => {
+        message.error(e.errorFields.map((f) => f.errors[0]).join(';'));
+        return Promise.reject(e);
+      }),
+    // @ts-expect-error
     scrollToField: (...args) => formRef.value?.scrollToField(...args),
+    // @ts-expect-error
     resetFields: (...args) => formRef.value?.resetFields(...args),
+    // @ts-expect-error
     clearValidate: (...args) => formRef.value?.clearValidate(...args),
-    validateFields: (...args) => formRef.value?.validateFields(...args),
+    validateFields: (...args) =>
+      // @ts-expect-error
+      formRef.value?.validateFields(...args).catch((e) => {
+        message.error(e.errorFields.map((f) => f.errors[0]).join(';'));
+        return Promise.reject(e);
+      }),
   });
 </script>
 
 <style>
+  @import './index.css';
   .ant-descriptions.ant-descriptions-bordered .ant-descriptions-view > table {
     table-layout: v-bind(props.tableLayout);
-  }
-  .descriptions-pro.ant-descriptions th.ant-descriptions-item-label {
-    padding-top: 0px;
   }
 </style>

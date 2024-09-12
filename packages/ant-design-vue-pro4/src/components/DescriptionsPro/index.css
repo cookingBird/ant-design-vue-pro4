@@ -1,0 +1,13 @@
+.descriptions-pro.ant-descriptions th.ant-descriptions-item-label {
+  padding-top: 0px;
+}
+
+.ant-descriptions-item-label .label--required::before {
+  display: inline-block;
+  margin-right: 4px;
+  color: #ff4d4f;
+  font-size: 14px;
+  font-family: SimSun, sans-serif;
+  line-height: 1;
+  content: "*";
+}
