@@ -1,5 +1,6 @@
 <template>
   <AntSelect
+    ref="selectRef"
     class="select-pro"
     v-bind="omitProps"
     :value="innerValue"
@@ -7,14 +8,14 @@
     :options="builtOptions"
     :showSearch="innerShowSearch"
     @update:value="updateValueHandler"
-    @search="handleSearch"
+    @search="hanldeChange"
   >
   </AntSelect>
 </template>
 
 <script lang="ts" setup>
   import { Select as AntSelect } from 'ant-design-vue';
-  import { computed, ref, watchEffect } from 'vue';
+  import { computed, ref, watchEffect, onMounted } from 'vue';
   import type { SelectOption, SelectPro } from '.';
   import { useFetch } from '../../hooks/fetch';
   import { useValue } from '../../hooks/value';
@@ -39,19 +40,10 @@
 
   const innerShowSearch = ref(props.showSearch || props.insertable);
 
-  console.log('select pro', props);
   const omitProps = computed(() =>
-    omit(
-      props,
-      'model',
-      'fetch',
-      'open',
-      'onUpdate:value',
-      'beforeValue',
-      'afterChange',
-      'showSearch',
-    ),
+    omit(props, 'model', 'fetch', 'open', 'onUpdate:value', 'beforeValue', 'afterChange', 'showSearch'),
   );
+
   // fetch data
   const fetchOps = ref<SelectOption[]>([]);
   const builtOptions = ref([]);
@@ -79,9 +71,7 @@
   // bind model
   const { valueGetter, valueSetter } = useValue(props.prop);
   const innerValue = computed(() => {
-    const res = props.beforeValue!(props.value ?? valueGetter(props.model)) as
-      | string
-      | number;
+    const res = props.beforeValue!(props.value ?? valueGetter(props.model)) as string | number;
     return res === '' ? undefined : res;
   });
   const emit = defineEmits<{
@@ -92,30 +82,46 @@
     emit('update:value', _n);
     props.model && valueSetter(props.model, _n);
   };
-  const handleSearch = (val: string) => {
+  //------------------------- insertable
+  const inputVal = ref('');
+  function hanldeChange(val: string) {
+    inputVal.value = val;
+    console.log('hanldeChange val', val);
+  }
+  const selectRef = ref(null);
+  onMounted(handleInsertable);
+  function handleInsertable() {
     if (!props.insertable) return;
-    const existOps =
-      (typeof props.filterOption === 'function' &&
-        builtOptions.value
-          // @ts-expect-error
-          .map((item) => props.filterOption(val, item))
-          .some((t) => t === true)) ||
-      (typeof props.filterOption === 'boolean' &&
-        builtOptions.value
-          .map(
-            (item) =>
+    const root = selectRef.value.$el as HTMLElement;
+    const inputElement = root.querySelector('input');
+    if (!inputElement) return;
+    inputElement.addEventListener('keydown', function (event) {
+      const val = inputVal.value;
+      if (!val) return;
+      if (event.key === 'Enter') {
+        // 或者使用 event.keyCode === 13
+        // 这里添加你的处理逻辑
+        const existOps =
+          (typeof props.filterOption === 'function' &&
+            builtOptions.value
               // @ts-expect-error
-              item[props.fieldNames.label].toLowerCase().indexOf(val.toLowerCase()) >= 0,
-          )
-          .some((t) => t === true));
-    if (!existOps) {
-      // 不存在选项
-      builtOptions.value.push({
-        label: val,
-        value: val,
-      });
-    }
-  };
+              .map((item) => props.filterOption(val, item))
+              .some((t) => t === true)) ||
+          (typeof props.filterOption === 'boolean' &&
+            builtOptions.value
+              .map((item) => item.label.toLowerCase().indexOf(val.toLowerCase()) >= 0)
+              .some((t) => t === true));
+        if (!existOps) {
+          // 不存在选项
+          builtOptions.value.push({
+            label: val,
+            value: val,
+          });
+          updateValueHandler(val);
+        }
+      }
+    });
+  }
 </script>
 
 <style lang="scss">

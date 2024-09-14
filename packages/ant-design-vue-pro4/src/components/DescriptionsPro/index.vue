@@ -59,11 +59,18 @@
 
   defineExpose({
     validate: (...args) =>
-      // @ts-expect-error
-      formRef.value?.validate(...args).catch((e) => {
-        message.error(e.errorFields.map((f) => f.errors[0]).join(';'));
-        return Promise.reject(e);
-      }),
+      formRef.value
+        // @ts-expect-error
+        .validate(...args)
+        .then(
+          () =>
+            (...args: Parameters<typeof message.success>) =>
+              message.success(...args),
+        )
+        .catch((e) => {
+          message.error(e.errorFields.map((f) => f.errors[0]).join(';'));
+          return Promise.reject(e);
+        }),
     // @ts-expect-error
     scrollToField: (...args) => formRef.value?.scrollToField(...args),
     // @ts-expect-error
@@ -71,11 +78,18 @@
     // @ts-expect-error
     clearValidate: (...args) => formRef.value?.clearValidate(...args),
     validateFields: (...args) =>
-      // @ts-expect-error
-      formRef.value?.validateFields(...args).catch((e) => {
-        message.error(e.errorFields.map((f) => f.errors[0]).join(';'));
-        return Promise.reject(e);
-      }),
+      formRef.value
+        // @ts-expect-error
+        .validateFields(...args)
+        .then(
+          () =>
+            (...args: Parameters<typeof message.success>) =>
+              message.success(...args),
+        )
+        .catch((e) => {
+          message.error(e.errorFields.map((f) => f.errors[0]).join(';'));
+          return Promise.reject(e);
+        }),
   });
 </script>
 

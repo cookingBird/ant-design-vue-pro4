@@ -32,6 +32,10 @@
   });
   const props = defineProps({
     ...inputProps(),
+    autocomplete: {
+      type: String,
+      default: 'off',
+    },
     placeholder: {
       type: String,
       default: '请输入',
