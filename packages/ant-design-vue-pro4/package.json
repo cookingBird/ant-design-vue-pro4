@@ -14,7 +14,8 @@
     "@vueuse/core": "^10.11.0",
     "draggable-resizable-vue3": "1.0.94-beta",
     "lodash": "4.17.21",
-    "@easy/common-utils": "workspace:*"
+    "@easy/common-utils": "workspace:*",
+    "@easy/common-hooks": "workspace:*"
   },
   "peerDependencies": {
     "ant-design-vue": "^4.2.3",
